@@ -34,9 +34,16 @@ Kafka Tests
 You also need to install Kafka which can be downloaded from: https://kafka.apache.org/downloads
 
 Then edit the Kafka server properties file (``/path/to/kafka/config/server.properties``)
-to have the following line::
+to include listener configuration that is reachable from the host or IP
+address used by the bucket notification tests. For example::
 
-        listeners=PLAINTEXT://localhost:9092
+        listeners=PLAINTEXT://0.0.0.0:9092
+        advertised.listeners=PLAINTEXT://192.168.1.100:9092
+
+Replace ``192.168.1.100`` with your Kafka broker's actual hostname or IP
+address. The bucket notification Kafka tests connect to the broker through a
+host-reachable address, so a configuration that only advertises ``localhost``
+may work for manual smoke tests but still fail the automated Kafka test path.
 
 After following the above steps, start the Zookeeper and Kafka services.
 For starting Zookeeper service run::
