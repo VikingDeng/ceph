@@ -78,10 +78,7 @@ connection_id_t::connection_id_t(
     const boost::optional<const std::string&>& _mechanism,
     bool _ssl,
     bool _verify_ssl)
-    : broker(_broker),
-      user(_user),
-      password(_password),
-      ssl(_ssl),
+    : broker(_broker), user(_user), password(_password), ssl(_ssl),
       verify_ssl(_verify_ssl) {
   if (_ca_location.has_value()) {
     ca_location = _ca_location.get();
@@ -326,11 +323,9 @@ bool new_producer(connection_t* conn) {
     } else {
       ldout(conn->cct, 20) << "Kafka connect: using default CA location" << dendl;
     }
-    if (rd_kafka_conf_set(conf.get(),
-                          "enable.ssl.certificate.verification",
+    if (rd_kafka_conf_set(conf.get(), "enable.ssl.certificate.verification",
                           conn->verify_ssl ? "true" : "false",
-                          errstr,
-                          sizeof(errstr)) != RD_KAFKA_CONF_OK) {
+                          errstr, sizeof(errstr)) != RD_KAFKA_CONF_OK) {
       goto conf_error;
     }
     ldout(conn->cct, 20) << "Kafka connect: "
@@ -658,13 +653,8 @@ public:
       broker_list.append(brokers.get());
     }
 
-    connection_id_t tmp_id(broker_list,
-                           user,
-                           password,
-                           ca_location,
-                           mechanism,
-                           use_ssl,
-                           verify_ssl);
+    connection_id_t tmp_id(broker_list, user, password, ca_location, mechanism,
+                           use_ssl, verify_ssl);
     std::lock_guard lock(connections_lock);
     const auto it = connections.find(tmp_id);
     // note that ssl vs. non-ssl connection to the same host are two separate connections
