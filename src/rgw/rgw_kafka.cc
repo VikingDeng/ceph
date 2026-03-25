@@ -859,3 +859,4 @@ size_t get_max_queue() {
 }
 
 } // namespace kafka
+
